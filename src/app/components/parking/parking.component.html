@@ -1,0 +1,277 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button
+        type="button"
+        class="navbar-toggle"
+        data-toggle="collapse"
+        data-target="#myNavbar"
+      >
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Parking</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav"></ul>
+    </div>
+  </div>
+</nav>
+<section class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="btn-toolbar">
+        <button
+          class="btn btn-default navbar-btn"
+          data-toggle="modal"
+          data-target="#add-device"
+        >
+          Add Device
+        </button>
+        <button
+          class="btn btn-default navbar-btn"
+          id="removedevice"
+          (click)="removeDevice()"
+          [disabled]="isInvalid()"
+        >
+          Remove Device
+        </button>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="btn-toolbar">
+        <button
+          class="btn btn-default navbar-btn"
+          data-toggle="modal"
+          data-target="#add-counter"
+        >
+          Add Counter
+        </button>
+        <button
+          class="btn btn-default navbar-btn"
+          id="removecounter"
+          (click)="removeCounter()"
+          [disabled]="isInvalid()"
+        >
+          Remove Counter
+        </button>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="btn-toolbar">
+        <button
+          class="btn btn-primary navbar-btn"
+          (click)="saveConfiguration()"
+        >
+          Save Configuration
+        </button>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="btn-toolbar">
+        <button
+          class="btn btn-default navbar-btn"
+          data-toggle="modal"
+          data-target="#add-image"
+        >
+          Set Background Image
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <!-- Nav tabs -->
+      <ul id="tab-list" class="nav nav-tabs" role="tablist">
+        <ng-container *ngFor="let tab of parking_object; let i = index">
+          <li [ngClass]="{ active: i === 0 }" *ngIf="tab.tab_flag == true" (click)="fillTab(tab?.tab_id,i)">
+            <a
+              href="#tab{{ tab?.tab_id }}"
+              id="{{ tab?.tab_id }}"
+              role="tab"
+              data-toggle="tab"
+              ><span id="edittab_{{ tab?.tab_id }}" contenteditable="true">
+                {{ tab?.tab_name }}
+              </span>
+              &nbsp;
+              <button
+                type="button"
+                class="btn btn-default btn-xs"
+                id="savetab_{{ i + 1 }}"
+                title="Rename this tab"
+              >
+                <i
+                  class="fa fa-floppy-o"
+                  aria-hidden="true"
+                  (click)="onSaveTabName()"
+                ></i></button
+              >&nbsp;
+              <button class="close" type="button" title="Remove this tab">
+                ×
+              </button>
+            </a>
+          </li>
+        </ng-container>
+        <li><a href="#" id="btn-add-tab" class="add-contact">+</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div id="tab-content" class="tab-content">
+        <ng-container *ngFor="let tab of parking_object; let i = index">
+          <div
+            class="tab-pane fade in active"
+            id="tab{{ tab?.tab_id }}"
+            *ngIf="tab.tab_flag == true"
+          >
+            <div
+              id="mapid_{{ tab?.tab_id }}"
+              class="map"
+              style="width:909px;height:500px;"
+            ></div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</section>
+<!--Add Device Modal-->
+<div class="modal fade" id="add-device" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          &times;
+        </button>
+        <h4 class="modal-title">Add Device</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">Select Device</label>
+            <select
+              class="form-control"
+              id="exampleFormControlSelect1"
+              (change)="onChange($event.target.value)"
+            >
+              <option
+                *ngFor="let d of list_of_devices"
+                value="{{ d.id }}"
+                attr.data-content="<img src=&quot;assets/icons/{{
+                  d.iconImg
+                }}&quot;>"
+                >{{ d.name }}</option
+              >
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-default pull-left"
+          data-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-default"
+          data-dismiss="modal"
+          (click)="addDevice()"
+        >
+          Ok
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Add Counter Modal-->
+<div class="modal fade" id="add-counter" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          &times;
+        </button>
+        <h4 class="modal-title">Add Counter</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">Select Counter</label>
+            <select
+              class="form-control"
+              id="exampleFormControlSelect1"
+              (change)="onChangeCounter($event.target.value)"
+            >
+              <option *ngFor="let d of list_of_counters" value="{{ d.id }}">{{
+                d.name
+              }}</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-default pull-left"
+          data-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-default"
+          data-dismiss="modal"
+          (click)="addCounter()"
+        >
+          Ok
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Set background image Modal-->
+<div class="modal fade" id="add-image" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          &times;
+        </button>
+        <h4 class="modal-title">Add Image Background</h4>
+      </div>
+      <div class="modal-body">
+        <input
+          type="file"
+          (change)="onFileChange($event)"
+          class="form-control"
+          id="upload"
+        />
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-default pull-left"
+          data-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-default"
+          data-dismiss="modal"
+          (click)="onUpload()"
+        >
+          Ok
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

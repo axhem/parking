@@ -18,7 +18,7 @@ npm install -g @angular/cli@7.3.5
 ### Installing
 
 ```
-git clone https://axhemshahaj@bitbucket.org/axhemshahaj/parking.git
+git clone https://github.com/axhem/parking.git
 ```
 
 And go to cd parking and run:
